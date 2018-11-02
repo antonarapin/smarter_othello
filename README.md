@@ -1,2 +1,1 @@
-# If Othello Was Smarter 
-AI Othello (Reversi) neural network based agent
+# This branch is for board bitstring representation development 
