@@ -67,20 +67,6 @@ class othello_board:
     def get_legal_moves(self,p):
         return [(x[1],x[0][1]) for x in map(lambda x: (self.check_move(x[0],x[1],p),x), self.empty_spaces) if x[0][0]]
 
-    def isTerminal(self):
-        for l in self.board:
-            if None in l:
-                return False
-        return True
-    
-    def getTurn(self):
-        return self.turn
-
-    def getState(self):
-        return self.board
-    
-    def getTile(self,r,c):
-        return self.board[r][c]
 
 #short test of the functions
 if __name__ == "__main__":
