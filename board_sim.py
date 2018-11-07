@@ -3,7 +3,10 @@ class othello_board:
     def __init__(self,nrows,ncols):
         self.rows = nrows
         self.cols = ncols
+        self.turn = 0
         self.board = [[None for i in range(self.cols)] for j in range(self.rows)]
+
+        #initialize the board to have the 4 starting disks
         for r in range(nrows//2-1,nrows//2 +1):
             for c in range(ncols//2-1,ncols//2 +1):
                 self.board[r][c] = int((r%2 + c%2)%2)
@@ -64,12 +67,29 @@ class othello_board:
     def get_legal_moves(self,p):
         return [(x[1],x[0][1]) for x in map(lambda x: (self.check_move(x[0],x[1],p),x), self.empty_spaces) if x[0][0]]
 
-b = othello_board(8,8) 
-lm = b.get_legal_moves(1)
-for r in b.board:
-    print(r)
-print(lm)
-b.make_move(lm[0][0][0],lm[0][0][1],1,lm[0][1])
-for r in b.board:
-    print(r)
-print(b.empty_spaces)
+    def isTerminal(self):
+        for l in self.board:
+            if None in l:
+                return False
+        return True
+    
+    def getTurn(self):
+        return self.turn
+
+    def getState(self):
+        return self.board
+    
+    def getTile(self,r,c):
+        return self.board[r][c]
+
+#short test of the functions
+if __name__ == "__main__":
+    b = othello_board(8,8) 
+    lm = b.get_legal_moves(1)
+    for r in b.board:
+        print(r)
+    print(lm)
+    b.make_move(lm[0][0][0],lm[0][0][1],1,lm[0][1])
+    for r in b.board:
+        print(r)
+    print(b.empty_spaces)
