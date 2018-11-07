@@ -75,6 +75,7 @@ if __name__ == "__main__":
     for r in b.board:
         print(r)
     print(lm)
+    print(b.legalMovesOnly(1))
     b.make_move(lm[0][0][0],lm[0][0][1],1,lm[0][1])
     for r in b.board:
         print(r)
