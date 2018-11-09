@@ -56,7 +56,8 @@ def main():
         problem.reset()
        
         while not problem.isTerminal():
-            playerIdx = problem.getTurn()
+            turn = problem.getTurn()
+            playerIdx = (1 + turn)//2
             if players[playerIdx] == "random":
                 moves = problem.legalMovesOnly()
             elif players[playerIdx] == "human":
@@ -79,14 +80,14 @@ def main():
                 display.update()
     
         FS = problem.finalScore()
-        if FS[0] == FS[1]:
+        if FS==0:
             whoWon = "Draw"
             draws += 1
-        elif FS[0] < FS[1]:
-            whoWon = "Player 2 wins! "+str(FS[0])+"-"+str(FS[1])
+        elif FS > 0:
+            whoWon = "Player 2 wins by "+str(FS)+"!"
             p2Wins += 1
-        elif FS[0] > FS[1]:
-            whoWon = "Player 1 wins! "+str(FS[0])+"-"+str(FS[1])
+        elif FS < 0:
+            whoWon = "Player 1 wins by "+str(abs(FS))+"!"
             p1Wins += 1
             
         if args.trials > 1:

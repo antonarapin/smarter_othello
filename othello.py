@@ -4,13 +4,16 @@ class Othello:
     def __init__(self, row = 8, col=8):
         self.rows = row
         self.cols = col
-        self.turn = 0
-        self.board = [[None for i in range(self.cols)] for j in range(self.rows)]
+        self.turn = -1
+        self.board = [[0 for i in range(self.cols)] for j in range(self.rows)]
 
         #initialize the board to have the 4 starting disks
         for r in range(self.rows//2-1,self.rows//2 +1):
             for c in range(self.cols//2-1,self.cols//2 +1):
-                self.board[r][c] = int((r%2 + c%2)%2)
+                if int((r%2 + c%2)%2) ==0:
+                    self.board[r][c] = -1
+                else:
+                    self.board[r][c] = 1
         self.directions = [(x,y) for x in range(-1,2) for y in range(-1,2) if not (x==0 and y==0)]
         self.emptyContours = [] #stores all the empty spaces arround the disks
         for i in range(self.cols//2-2,self.cols//2+2):
@@ -43,7 +46,7 @@ class Othello:
     def check_move(self,r,c,p=None):
         if p==None:
             p=self.turn
-        if self.board[r][c]!=None:
+        if self.board[r][c]!=0:
             return False,[]
         flip_l = []
         for d in self.directions:
@@ -51,7 +54,7 @@ class Othello:
             trace = True
             f = []
             while trace:
-                if self.__outBounds(row,col) or self.board[row][col]==None:
+                if self.__outBounds(row,col) or self.board[row][col]==0:
                     trace = False 
                 elif self.board[row][col]==p:
                     if len(f)>0:
@@ -78,23 +81,23 @@ class Othello:
             self.emptyContours.remove((r,c))
             for d in self.directions:
                 if not self.__outBounds(r+d[0],c+d[1]):
-                    if self.board[r+d[0]][c+d[1]]==None:
+                    if self.board[r+d[0]][c+d[1]]==0:
                         if not (r+d[0],c+d[1]) in self.emptyContours:
                             self.emptyContours.append((r+d[0],c+d[1]))
 
             #determine who's turn it it next
             if self.isTerminal():
                 self.turn = 2
-            elif self.turn==0:
+            elif self.turn==-1:
                 if len(self.getLegalMoves(1))!= 0:
                     self.turn = 1
                 else:
-                    print("Player 2 has no legal moves therefore they forefeit their turn")
+                    print("Player 2 has no legal moves, therefore they forefeit their turn")
             else:
-                if len(self.getLegalMoves(0))!= 0:
-                    self.turn = 0
+                if len(self.getLegalMoves(-1))!= 0:
+                    self.turn = -1
                 else:
-                    print("Player 1 has no legal moves therefore they forefeit their turn")
+                    print("Player 1 has no legal moves, therefore they forefeit their turn")
         else:
             print("Illegal move")
     
@@ -103,8 +106,10 @@ class Othello:
         return r<0 or c<0 or r>=self.rows or c>=self.cols
 
     def isTerminal(self):
+        if len(self.getLegalMoves(1))== 0 and len(self.getLegalMoves(-1))== 0:
+            return True
         for l in self.board:
-            if None in l:
+            if 0 in l:
                 return False
         return True
 
@@ -113,7 +118,7 @@ class Othello:
             counter = 0
             for row in self.board:
                 counter+=sum(row)
-            return [self.cols*self.rows-counter,counter]
+            return counter
         raise ValueError("Final Score called on unended game")
     
     def getTurn(self):
@@ -122,7 +127,7 @@ class Othello:
     def getTile(self,r,c):
         return self.board[r][c]
     
-
+import time
 class OthelloDisplay:
     '''Displays a Connect Four game.'''
     def __init__(self, board):
@@ -154,10 +159,14 @@ class OthelloDisplay:
         for r in range(self.__numRows):
             for c in range(self.__numCols):
                 t = self.__board.getTile(r, c)
-                if t == None:
+                if t == 0:
                     self.__images[r][c][0].draw(self.__win)
+                elif t==-1:
+                    self.__images[r][c][1].draw(self.__win)
                 else:
-                    self.__images[r][c][t+1].draw(self.__win)
+                    self.__images[r][c][2].draw(self.__win)
+
+        time.sleep(0.1)
                             
     def getMove(self):
         '''Allows the user to click to decide which column to move in.'''
