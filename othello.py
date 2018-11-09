@@ -1,4 +1,4 @@
-import cImage
+import cImage,copy
 
 class Othello:
     def __init__(self, row = 8, col=8):
@@ -23,16 +23,53 @@ class Othello:
 
     def getState(self):
         '''Returns the game state (the board) as a row major list of lists '''
-        return self.board
+        return copy.deepcopy(self.board)
 
-    def setState(self,state):
+    def setState(self,state,p):
         """takes a row major list of lists and sets the board state"""
-        pass
+        if p not in [1,-1]:
+            raise ValueError("Not a valid turn given")
+        self.turn = p
 
+        if len(state)!=self.rows:
+            raise ValueError("Board is wrong size: " + str(len(state)) + " rows, but expected "+str(self.rows))
+        
+        self.board = copy.deepcopy(state)
+        newContours = []
+
+        for r in range(self.rows):
+            if len(self.board[r])!=self.cols:
+                raise ValueError("Board is wrong size: " + str(len(self.board[r])) + " cols, but expected "+str(self.cols))
+            for c in range(self.cols):
+                if self.board[r][c]!=0:
+                    for d in self.directions:
+                        if not self.__outBounds(r+d[0],c+d[1]):
+                            if self.board[r+d[0]][c+d[1]]==0:
+                                if not (r+d[0],c+d[1]) in newContours:
+                                    newContours.append((r+d[0],c+d[1]))
+
+        self.emptyContours = newContours
+
+        
     def reset(self):
         """Resets the board and gameplay to original config. Returns True on success"""
         self.__init__(self.rows,self.cols)
         return True
+
+    def getSuccessors(self,state,p):
+        '''Takes a state and returns the possible successors as 4-tuples: 
+        (next state, action to get there, whose turn in the next state, final score).
+        For the last two items, see getTurn() and finalScore().'''
+        currentState = self.board
+        currTurn = self.turn
+        succ = []
+        self.setState(state,p)
+        for a in self.legalMovesOnly():
+            self.move(a[0],a[1])
+            succ.append((self.getState(), a, self.getTurn(), self.finalScore()))
+            self.setState(state,p)
+        self.setState(currentState,currTurn)
+        return succ
 
     def getLegalMoves(self, p=None):
         '''Returns the set of legal moves in the current state.'''
@@ -114,12 +151,15 @@ class Othello:
         return True
 
     def finalScore(self):
+        '''If the game is not over, returns None.
+        If it is over, it returns the net number of discs the winner received.
+        If nevative, player 1 won. If positive, player 2 won. If zero, draw.'''
         if self.isTerminal():
             counter = 0
             for row in self.board:
                 counter+=sum(row)
             return counter
-        raise ValueError("Final Score called on unended game")
+        return None
     
     def getTurn(self):
         return self.turn
