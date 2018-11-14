@@ -6,6 +6,7 @@ class Othello:
         self.cols = col
         self.turn = -1
         self.board = [[0 for i in range(self.cols)] for j in range(self.rows)]
+        self.truState = True
 
         #initialize the board to have the 4 starting disks
         for r in range(self.rows//2-1,self.rows//2 +1):
@@ -25,7 +26,7 @@ class Othello:
         '''Returns the game state (the board) as a row major list of lists '''
         return copy.deepcopy(self.board)
 
-    def setState(self,state,p):
+    def __setState(self,state,p):
         """takes a row major list of lists and sets the board state"""
         if p not in [1,-1]:
             raise ValueError("Not a valid turn given")
@@ -63,12 +64,14 @@ class Othello:
         currentState = self.board
         currTurn = self.turn
         succ = []
-        self.setState(state,p)
+        self.truState = False
+        self.__setState(state,p)
         for a in self.legalMovesOnly():
             self.move(a[0],a[1])
             succ.append((self.getState(), a, self.getTurn(), self.finalScore()))
-            self.setState(state,p)
-        self.setState(currentState,currTurn)
+            self.__setState(state,p)
+        self.__setState(currentState,currTurn)
+        self.truState = True
         return succ
 
     def getLegalMoves(self, p=None):
@@ -128,12 +131,12 @@ class Othello:
             elif self.turn==-1:
                 if len(self.getLegalMoves(1))!= 0:
                     self.turn = 1
-                else:
+                elif self.truState:
                     print("Player 2 has no legal moves, therefore they forefeit their turn")
             else:
                 if len(self.getLegalMoves(-1))!= 0:
                     self.turn = -1
-                else:
+                elif self.truState:
                     print("Player 1 has no legal moves, therefore they forefeit their turn")
         else:
             print("Illegal move")
