@@ -35,7 +35,7 @@ class OthelloAgent:
 
         for i in range(len(succList)):
             if succList[i][3]!=None: #base case, terminal state
-                mmList[i] = succList[i][3]
+                mmList[i] = succList[i][3]/64
             else: 
                 toss,mmList[i] = self.MinimaxSearch(succList[i][0],succList[i][2],a,b,d-1)
             if turn==1:
