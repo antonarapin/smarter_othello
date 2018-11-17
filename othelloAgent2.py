@@ -1,3 +1,4 @@
+"""Bad agent, Loses to a random player half the time"""
 class OthelloAgent:
     def __init__(self, problem):
         self.problem = problem
@@ -6,14 +7,14 @@ class OthelloAgent:
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),4)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),4,0)
 
         return moveList
     
-    def MinimaxSearch(self,state,turn,a,b,d):
+    def MinimaxSearch(self,state,turn,a,b,d,acc):
         if d<=0:
-            return [], self.greedyHeuristic(state)
-        
+            return [], self.greedyAcc(state)+acc
+        acc+=self.greedyAcc(state)
         succList = self.problem.getSuccessors(state,turn)
         mmList = [None]*len(succList)
         curMMScore = float('inf')
@@ -37,7 +38,7 @@ class OthelloAgent:
             if succList[i][3]!=None: #base case, terminal state
                 mmList[i] = succList[i][3]/64
             else: 
-                toss,mmList[i] = self.MinimaxSearch(succList[i][0],succList[i][2],a,b,d-1)
+                toss,mmList[i] = self.MinimaxSearch(succList[i][0],succList[i][2],a,b,d-1,acc)
             if turn==1:
                 if mmList[i]>curMMScore:
                     curMMScore = mmList[i]
@@ -58,7 +59,7 @@ class OthelloAgent:
         return [succList[curMMIdx][1]],curMMScore
 
     
-    def greedyHeuristic(self,state):
+    def greedyAcc(self,state):
         counter = 0
         for row in state:
             counter+=sum(row)
