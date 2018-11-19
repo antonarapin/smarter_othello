@@ -209,7 +209,7 @@ class OthelloDisplay:
                 else:
                     self.__images[r][c][2].draw(self.__win)
 
-        time.sleep(0.1)
+        #time.sleep(0.1)
                             
     def getMove(self):
         '''Allows the user to click to decide which column to move in.'''

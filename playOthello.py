@@ -4,6 +4,7 @@ import time
 import importlib
 import signal
 from othello import *
+from dataCollector import OthelloDataCollector
 
 class timeout:
     def __init__(self, seconds=1):
@@ -27,7 +28,7 @@ def main():
     parser.add_argument('-nd', '--nodisplay', action='store_true', default=False, help='do not display the game (has no effect if a player is human)')
     
     args = parser.parse_args()
-
+    gather = OthelloDataCollector()
     problem = Othello()   
 
     players = [args.player1, args.player2]
@@ -35,7 +36,7 @@ def main():
     if args.player1 == "human" or args.player2 == "human":
         args.trials = 1
         args.nodisplay = False
-        print("Please click on a column with an empty space.")       
+        print("Please click on a square with an empty space.")       
 
     if args.trials == 1 and not args.nodisplay:
         display = OthelloDisplay(problem)
@@ -65,10 +66,10 @@ def main():
             else: #minimax
                 startT = time.time()
                 try:
-                    with timeout(3):
+                    with timeout(5):
                         moves = playerPrograms[playerIdx].getMoves()
                 except TimeoutError:
-                    print("Player " + str(playerIdx+1) + " timed out after 3 seconds. Choosing random action.")
+                    print("Player " + str(playerIdx+1) + " timed out after 5 seconds. Choosing random action.")
                     moves = problem.legalMovesOnly()
                 endT = time.time()
                 times[playerIdx] += endT - startT
@@ -78,6 +79,8 @@ def main():
             problem.move(move[0],move[1])                
             if args.trials == 1 and not args.nodisplay:
                 display.update()
+            gather.addDataPoint(problem.getState())
+        gather.endGame(problem.finalScore())
     
         FS = problem.finalScore()
         if FS==0:
