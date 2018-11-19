@@ -6,8 +6,8 @@ partsT = []
 n = 5 #number of folds
 
 for i in range(n): #the data is already separated by pos/neg targets, so partitions are even
-    part = indelData[i::n,0:-1] #sections the data into n=5 partitions
-    partT = indelData[i::n,-1:] #with equal number of pos and neg samples
+    part = data[i::n,0:-1] #sections the data into n=5 partitions
+    partT = data[i::n,-1:] #with equal number of pos and neg samples
 
     order = list(range(np.shape(part)[0])) #shuffle the samples in each partition
     np.random.shuffle(order)
