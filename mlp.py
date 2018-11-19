@@ -35,7 +35,7 @@ class mlp:
             self.weights2 = (np.random.rand(self.nhidden+1,self.nout)-0.5)*2/np.sqrt(self.nhidden)
         else:
             self.weights1 = np.loadtxt(weight1File,delimiter=',')
-            self.weights2 = np.loadtxt(weight2File,delimiter=',')
+            self.weights2 = np.reshape(np.loadtxt(weight2File,delimiter=','),(-1,1))
 
     def earlystopping(self,inputs,targets,valid,validtargets,eta,niterations=100):
     
@@ -85,7 +85,7 @@ class mlp:
                 deltao = (self.outputs-targets)*(self.outputs*(-self.outputs)+self.outputs)/self.ndata 
             else:
             	print("error")
-            
+                
             deltah = self.hidden*self.beta*(1.0-self.hidden)*(np.dot(deltao,np.transpose(self.weights2)))
                       
             updatew1 = eta*(np.dot(np.transpose(inputs),deltah[:,:-1])) + self.momentum*updatew1

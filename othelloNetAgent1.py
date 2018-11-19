@@ -67,4 +67,7 @@ class OthelloAgent:
         
         return [succList[curMMIdx][1]],curMMScore
 
-#after 1st training, loses by 16 as p1 to regular greedy. Wins against regular greedy by 12 as p2.
+#after 1st training with 11500 dpts, loses by 16 as p1 to regular greedy. Wins against regular greedy by 12 as p2.
+#after 2nd training with 30000 dpts, wins by 16 as p1 against greedy. Wins against greedy by 20 as p2.
+#also after 2nd training, when it plays itself, p2 wins by 50...
+#after training 3 with 65000 dpts, wins as p1 by 28. Wins as p2 by 40.
