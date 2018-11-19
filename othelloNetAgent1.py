@@ -1,43 +1,47 @@
-"""Draws with agent 1 when player 1. wins as player 2."""
+import mlp, numpy as np
 class OthelloAgent:
     def __init__(self, problem):
         self.problem = problem
+        self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
 
     def getMoves(self):
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),4)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),3)
 
         return moveList
     
     def MinimaxSearch(self,state,turn,a,b,d):
-        if d<=0:
-            return [], self.greedyHeuristic(state)
-        
         succList = self.problem.getSuccessors(state,turn)
-        for s in succList: #if I can get force a forefeit then do it.
-            if s[2]==turn and d==4:
-                print("try to force forefit turn")
-                return [s[1]],turn
-        
-        mmList = [None]*len(succList)
         curMMScore = float('inf')
         if turn == 1:
             curMMScore = -float('inf')
         curMMIdx = None
-        prune = False
 
-        ###move ordering
-        # MO = []
-        # for s in range(len(succList)):
-        #     if succList[s][0] in self.bank:
-        #         MO.append((self.bank[succList[s][0]],s))
-        #     else:
-        #         MO.append((0,s))
-        # MO.sort()
-        # if turn==1:
-        #     MO.reverse()
+        if d<=0:
+            preArr = []
+            for i in range(len(succList)):
+                tmp = []
+                for r in succList[i][0]:
+                    tmp = tmp+r
+                tmp.append(-1)
+                preArr.append(tmp)
+            arr = np.array(preArr)
+            result = self.net.mlpfwd(arr)
+            for i in range(len(succList)):
+                if turn==1:
+                    if result[i]>curMMScore:
+                        curMMScore = result[i]
+                        curMMIdx = i
+                elif turn ==-1:
+                    if result[i]<curMMScore:
+                        curMMScore = result[i]
+                        curMMIdx = i
+            return [succList[curMMIdx][1]], curMMScore     
+        
+        mmList = [None]*len(succList)
+        prune = False
 
         for i in range(len(succList)):
             if succList[i][3]!=None: #base case, terminal state
@@ -63,9 +67,4 @@ class OthelloAgent:
         
         return [succList[curMMIdx][1]],curMMScore
 
-    
-    def greedyHeuristic(self,state):
-        counter = 0
-        for row in state:
-            counter+=sum(row)
-        return counter/64 #div by 64 to ensure value between -1 and 1
+#after 1st training, loses by 16 as p1 to regular greedy. Wins against regular greedy by 12 as p2.

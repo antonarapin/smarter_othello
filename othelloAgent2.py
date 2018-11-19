@@ -1,5 +1,4 @@
-"""Bad agent most of, Loses to a random player half the time
-but... beat agent1 by 58(!) in 1 game by picking moves that would cause the other player to forefit their turn"""
+"""Draws with agent 1 when player 1. wins as player 2."""
 class OthelloAgent:
     def __init__(self, problem):
         self.problem = problem
@@ -8,15 +7,20 @@ class OthelloAgent:
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),4,0)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),4)
 
         return moveList
     
-    def MinimaxSearch(self,state,turn,a,b,d,acc):
+    def MinimaxSearch(self,state,turn,a,b,d):
         if d<=0:
-            return [], self.greedyAcc(state)+acc
-        acc+=self.greedyAcc(state)
+            return [], self.greedyHeuristic(state)
+        
         succList = self.problem.getSuccessors(state,turn)
+        for s in succList: #if I can get force a forefeit then do it.
+            if s[2]==turn and d==4:
+                print("try to force forefit turn")
+                return [s[1]],turn
+        
         mmList = [None]*len(succList)
         curMMScore = float('inf')
         if turn == 1:
@@ -37,9 +41,9 @@ class OthelloAgent:
 
         for i in range(len(succList)):
             if succList[i][3]!=None: #base case, terminal state
-                mmList[i] = (succList[i][3]/64)+acc
+                mmList[i] = succList[i][3]/64
             else: 
-                toss,mmList[i] = self.MinimaxSearch(succList[i][0],succList[i][2],a,b,d-1,acc)
+                toss,mmList[i] = self.MinimaxSearch(succList[i][0],succList[i][2],a,b,d-1)
             if turn==1:
                 if mmList[i]>curMMScore:
                     curMMScore = mmList[i]
@@ -60,7 +64,7 @@ class OthelloAgent:
         return [succList[curMMIdx][1]],curMMScore
 
     
-    def greedyAcc(self,state):
+    def greedyHeuristic(self,state):
         counter = 0
         for row in state:
             counter+=sum(row)

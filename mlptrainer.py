@@ -20,9 +20,9 @@ for i in range(n): #the data is already separated by pos/neg targets, so partiti
 nin = np.shape(part)[1]
 nout = np.shape(partT)[1]
 if len(sys.argv)>=4:
-    net = mlp.mlp(nin,nout,weight1File=sys.argv[2],weight2File=sys.argv[3])
+    net = mlp.mlp(weight1File=sys.argv[2],weight2File=sys.argv[3])
 else:
-    net = mlp.mlp(nin,nout)
+    net = mlp.mlp(numInputs=nin,numTargets=nout)
 
 for i in range(n):
     train = []

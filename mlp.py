@@ -13,11 +13,9 @@ import numpy as np
 class mlp:
     """ A Multi-Layer Perceptron"""
     
-    def __init__(self,numInputs,numTargets,nhidden=4,beta=1,momentum=0.9,weight1File=None,weight2File=None):
+    def __init__(self,numInputs=None,numTargets=None,nhidden=4,beta=1,momentum=0.9,weight1File=None,weight2File=None):
         """ Constructor """
-        # Set up network size
-        self.nin = numInputs
-        self.nout = numTargets
+        
         #self.ndata = np.shape(inputs)[0]
         self.nhidden = nhidden
 
@@ -27,6 +25,12 @@ class mlp:
     
         # Initialise network
         if weight1File == None:
+            # Set up network size
+            if numInputs== None or numTargets==None:
+                raise ValueError("If weight files aren't provided, numInputs and numTargets must be given")
+            self.nin = numInputs
+            self.nout = numTargets
+            #initialize weights
             self.weights1 = (np.random.rand(self.nin+1,self.nhidden)-0.5)*2/np.sqrt(self.nin)
             self.weights2 = (np.random.rand(self.nhidden+1,self.nout)-0.5)*2/np.sqrt(self.nhidden)
         else:
@@ -99,7 +103,10 @@ class mlp:
 
         self.hidden = np.dot(inputs,self.weights1)
         self.hidden = 1.0/(1.0+np.exp(-self.beta*self.hidden))
-        self.hidden = np.concatenate((self.hidden,-np.ones((np.shape(inputs)[0],1))),axis=1)
+        if inputs.ndim==1:
+            self.hidden = np.append(self.hidden,-1)
+        else:
+            self.hidden = np.concatenate((self.hidden,-np.ones((np.shape(inputs)[0],1))),axis=1)
 
         outputs = np.dot(self.hidden,self.weights2)
 
