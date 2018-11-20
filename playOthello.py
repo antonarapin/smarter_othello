@@ -28,7 +28,7 @@ def main():
     parser.add_argument('-nd', '--nodisplay', action='store_true', default=False, help='do not display the game (has no effect if a player is human)')
     
     args = parser.parse_args()
-    gather = OthelloDataCollector()
+    #gather = OthelloDataCollector()
     problem = Othello()   
 
     players = [args.player1, args.player2]
@@ -79,8 +79,8 @@ def main():
             problem.move(move[0],move[1])                
             if args.trials == 1 and not args.nodisplay:
                 display.update()
-            gather.addDataPoint(problem.getState())
-        gather.endGame(problem.finalScore())
+            #gather.addDataPoint(problem.getState())
+        #gather.endGame(problem.finalScore())
     
         FS = problem.finalScore()
         if FS==0:

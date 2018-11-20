@@ -7,6 +7,7 @@
 # This code comes with no warranty of any kind.
 
 # Stephen Marsland, 2008, 2014
+#Modified by Horace Facey, 2018
 
 import numpy as np
 
@@ -46,14 +47,14 @@ class mlp:
         new_val_error = 100000
         
         count = 0
-        while (((old_val_error1 - new_val_error) > 0.001) or ((old_val_error2 - old_val_error1)>0.001)):
-            count+=1
-            #print(count)
+        while (((old_val_error1 - new_val_error) > 0.01) or ((old_val_error2 - old_val_error1)>0.01)):
             self.mlptrain(inputs,targets,eta,niterations)
             old_val_error2 = old_val_error1
             old_val_error1 = new_val_error
             validout = self.mlpfwd(valid)
             new_val_error = 0.5*np.sum((validtargets-validout)**2)
+            count+=1
+            print("loop:",count,"currError:",new_val_error)
                         
         #print("Stopped", new_val_error,old_val_error1, old_val_error2)
         return new_val_error

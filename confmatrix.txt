@@ -1,0 +1,6 @@
+training on 100,000 datapoints
+fold: 3 had error: 648.565005878
+Confusion matrix is:
+[[ 6480.  3032.]
+ [ 3829.  6662.]]
+Percentage Correct:  65.7001449783
