@@ -66,10 +66,10 @@ def main():
             else: #minimax
                 startT = time.time()
                 try:
-                    with timeout(8):
+                    with timeout(10):
                         moves = playerPrograms[playerIdx].getMoves()
                 except TimeoutError:
-                    print("Player " + str(playerIdx+1) + " timed out after 8 seconds. Choosing random action.")
+                    print("Player " + str(playerIdx+1) + " timed out after 10 seconds. Choosing random action.")
                     moves = problem.legalMovesOnly()
                 endT = time.time()
                 times[playerIdx] += endT - startT
