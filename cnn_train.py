@@ -14,7 +14,7 @@ def cnn_train(lr):
     criterion = nn.MSELoss()
     optimizer = optim.SGD(net.parameters(), lr=lr)
     fname = "cnn_model"+str(lr)+".pt"
-    lossfile = open("lossfile_"+fname)
+    lossfile = open("lossfile_"+fname,'w+')
 
     # read data
     data = np.loadtxt("endgameResults.data",delimiter=",") 
@@ -22,7 +22,7 @@ def cnn_train(lr):
     ep = 0
     dpts = {}
     start = time.time()
-    for t in range(3):
+    for t in range(8):
         np.random.shuffle(data)
         for data_pt in data:
             ep+=1
@@ -39,7 +39,7 @@ def cnn_train(lr):
             output = net(inputs)
             #print(target,output)
             loss = criterion(output, target)
-            lossfile.write(str(float(loss.data[0]))+"\n")
+            lossfile.write(str(float(loss.data))+"\n")
             #if ep%1000==0:
             #    print(ep,target.data[0],output.data[0],loss.data[0])
             #time.sleep(1)
@@ -50,7 +50,7 @@ def cnn_train(lr):
     print("savig to " + fname + "...")
     torch.save(net,fname)
     print("saved")
-cnn_train(0.05)
-cnn_train(0.1)
-cnn_train(0.2)
-cnn_train(0.3)
+cnn_train(0.08)
+# cnn_train(0.5)
+# cnn_train(0.6)
+# cnn_train(0.7)
