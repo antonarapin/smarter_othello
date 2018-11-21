@@ -39,7 +39,7 @@ def cnn_train(lr):
             output = net(inputs)
             #print(target,output)
             loss = criterion(output, target)
-            lossfile.write(float(loss.data[0]))
+            lossfile.write(str(float(loss.data[0]))+"\n")
             #if ep%1000==0:
             #    print(ep,target.data[0],output.data[0],loss.data[0])
             #time.sleep(1)
