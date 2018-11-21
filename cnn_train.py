@@ -13,6 +13,8 @@ def cnn_train(lr):
     net = Othello_CNN()
     criterion = nn.MSELoss()
     optimizer = optim.SGD(net.parameters(), lr=lr)
+    fname = "cnn_model"+str(lr)+".pt"
+    lossfile = open("lossfile_"+fname)
 
     # read data
     data = np.loadtxt("endgameResults.data",delimiter=",") 
@@ -37,14 +39,14 @@ def cnn_train(lr):
             output = net(inputs)
             #print(target,output)
             loss = criterion(output, target)
-            if ep%1000==0:
-                print(ep,target.data[0],output.data[0],loss.data[0])
+            lossfile.write(float(loss.data[0]))
+            #if ep%1000==0:
+            #    print(ep,target.data[0],output.data[0],loss.data[0])
             #time.sleep(1)
             loss.backward()
             optimizer.step()
     end = time.time()
     print("TIME ELAPSED:",end-start)
-    fname = "cnn_model"+str(lr)+".pt"
     print("savig to " + fname + "...")
     torch.save(net,fname)
     print("saved")
