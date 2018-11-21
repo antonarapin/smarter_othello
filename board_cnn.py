@@ -34,12 +34,12 @@ criterion = nn.MSELoss()
 optimizer = optim.SGD(net.parameters(), lr=0.09)
 
 # read data
-data = np.loadtxt("results.data",delimiter=",") 
+data = np.loadtxt("endgameResults.data",delimiter=",") 
 # just go through all data unfiltered
 ep = 0
 dpts = {}
 start = time.time()
-for t in range(4):
+for t in range(3):
     np.random.shuffle(data)
     for data_pt in data:
         ep+=1
@@ -63,6 +63,6 @@ for t in range(4):
         optimizer.step()
 end = time.time()
 print("TIME ELAPSED:",end-start)
-print("savig to \'cnn_model.pt\'...")
-torch.save(net,'cnn_model.pt')
+print("savig to \'cnn_model1.pt\'...")
+torch.save(net,'cnn_model1.pt')
 print("saved")"""
