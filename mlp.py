@@ -144,8 +144,8 @@ class mlp:
                 cm[i,j] = np.sum(np.where(outputs==i,1,0)*np.where(targets==j,1,0))
 
         print("Confusion matrix is:")
-        print(cm)
-        print("Percentage Correct: ",np.trace(cm)/np.sum(cm)*100)
+        #print(cm)
+        #print("Percentage Correct: ",np.trace(cm)/np.sum(cm)*100)
         return cm,np.trace(cm)/np.sum(cm)*100
 
     def saveWeights(self,w1file='fstWeights.data',w2file='sndWeights.data'):
