@@ -7,7 +7,7 @@ import torch.nn.functional as func
 import torch.optim as optim
 import random
 import time
-#from board_cnn import Othello_CNN
+#from cnn1 import Othello_CNN
 #from cnn2 import Othello_CNN
 from cnn3 import Othello_CNN
 
