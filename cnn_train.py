@@ -7,7 +7,9 @@ import torch.nn.functional as func
 import torch.optim as optim
 import random
 import time
-from board_cnn import Othello_CNN
+#from board_cnn import Othello_CNN
+#from cnn2 import Othello_CNN
+from cnn3 import Othello_CNN
 
 def cnn_train(lr):
     net = Othello_CNN()
@@ -40,8 +42,8 @@ def cnn_train(lr):
             #print(target,output)
             loss = criterion(output, target)
             lossfile.write(str(float(loss.data))+"\n")
-            #if ep%1000==0:
-            #    print(ep,target.data[0],output.data[0],loss.data[0])
+            if ep%1000==0:
+                print(ep,target.data[0],output.data[0],loss.data[0])
             #time.sleep(1)
             loss.backward()
             optimizer.step()
