@@ -1,12 +1,13 @@
 import sys,mlp,numpy as np
 
-n = 5 #number of folds
-allData = np.loadtxt("results.data",delimiter=',')
-numPts = list(range(10000,100001,10000))
-for s in numPts:
+n = 3 #number of folds
+#allData = np.loadtxt("results.data",delimiter=',')
+#for s in range(10000,100001,10000):
+for s in range(63,65,10):
     print("____________________________________")
-    print("now learning on",s,"data points")
-    data = allData[:s,:]
+    print("now learning on",s,"to endgame")
+    #data = allData[:s,:]
+    data  = np.loadtxt("end"+str(s)+".data",delimiter=',')
     parts = []
     partsT = []
 
@@ -42,7 +43,9 @@ for s in numPts:
         err = net.earlystopping(train,trainT,parts[i],partsT[i],0.4)
         cm,acc = net.confmat(parts[i],partsT[i])
         print("fold:",i,"had error:",err,"and acc:",acc)
-    f1 = "fWt"+str(s)[:2]+"k.data"
-    f2 = "sWt"+str(s)[:2]+"k.data"
+    #f1 = "fWt"+str(s)[:2]+"k.data"
+    #f2 = "sWt"+str(s)[:2]+"k.data"
+    f1 = "endfWt"+str(s)+".data"
+    f2 = "endsWt"+str(s)+".data"
     net.saveWeights(w1file=f1,w2file=f2)
             

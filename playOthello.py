@@ -5,7 +5,7 @@ import importlib
 import signal
 from othello import *
 from dataCollector import OthelloDataCollector
-from board_cnn import Othello_CNN
+#from board_cnn import Othello_CNN
 
 class timeout:
     def __init__(self, seconds=1):
