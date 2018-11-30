@@ -35,7 +35,7 @@ class OthelloAgent:
             arr = np.array(preArr)
             result = []
             for a in range(len(arr)):
-                inputs = torch.FloatTensor(arr[a].reshape((1,1,8,8)))
+                inputs = torch.FloatTensor(arr[a])
                 result.append(float(self.net(inputs)))
             #result = self.net.mlpfwd(arr)
             for i in range(len(succList)):
