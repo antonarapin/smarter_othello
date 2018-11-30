@@ -1,12 +1,12 @@
 import mlp, numpy as np
 import torch
-from cnn2 import Othello_CNN
+from cnn3 import Othello_CNN
 
 class OthelloAgent:
-    def __init__(self, problem):
+    def __init__(self, problem, _):
         self.problem = problem
         #self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
-        self.net = torch.load("cnn2_model0.1.pt")
+        self.net = torch.load("cnn3_model0.08.pt")
         self.net.eval()
 
     def getMoves(self):
