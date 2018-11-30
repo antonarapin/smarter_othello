@@ -2,13 +2,13 @@ import mlp, numpy as np
 class OthelloAgent:
     def __init__(self, problem):
         self.problem = problem
-        self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
+        self.net = mlp.mlp(weight1File="RRfWt.data",weight2File="RRsWt.data")
 
     def getMoves(self):
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),3)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),0)
 
         return moveList
     

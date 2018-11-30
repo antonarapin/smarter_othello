@@ -7,6 +7,7 @@
 # This code comes with no warranty of any kind.
 
 # Stephen Marsland, 2008, 2014
+
 #Modified by Horace Facey, 2018
 
 import numpy as np
@@ -38,6 +39,10 @@ class mlp:
             self.weights1 = np.loadtxt(weight1File,delimiter=',')
             self.weights2 = np.reshape(np.loadtxt(weight2File,delimiter=','),(-1,1))
 
+        self.bestW1 = None
+        self.bestW2 = None
+        self.bestErr = float("inf")
+
     def earlystopping(self,inputs,targets,valid,validtargets,eta,niterations=100):
     
         valid = np.concatenate((valid,-np.ones((np.shape(valid)[0],1))),axis=1)
@@ -54,9 +59,13 @@ class mlp:
             validout = self.mlpfwd(valid)
             new_val_error = 0.5*np.sum((validtargets-validout)**2)
             count+=1
-            print("loop:",count,"currError:",new_val_error)
+            print("loop:",count,"currError:",new_val_error,"ErrDiff:",old_val_error1 - new_val_error)
                         
         #print("Stopped", new_val_error,old_val_error1, old_val_error2)
+        if new_val_error<self.bestErr:
+            self.bestErr = new_val_error
+            self.bestW1 = np.copy(self.weights1)
+            self.bestW2 = np.copy(self.weights2)
         return new_val_error
     	
     def mlptrain(self,inputs,targets,eta,niterations):
@@ -149,5 +158,24 @@ class mlp:
         return cm,np.trace(cm)/np.sum(cm)*100
 
     def saveWeights(self,w1file='fstWeights.data',w2file='sndWeights.data'):
-        np.savetxt(w1file,self.weights1,fmt='%.6f',delimiter=',')
-        np.savetxt(w2file,self.weights2,fmt='%.6f',delimiter=',')
+        np.savetxt(w1file,self.bestW1,fmt='%.6f',delimiter=',')
+        np.savetxt(w2file,self.bestW2,fmt='%.6f',delimiter=',')
+
+    def randomRestart(self,swap=0.1):
+        """Randomly reinitializes a fraction of the learned weights,
+        attempting to jump from local mimima, and saves the best set"""
+        if self.bestErr >= float("inf"):
+            return None
+
+        numSwap = int(swap*(self.nin+1))
+        if numSwap==0:
+            numSwap=1
+        swapIdx = []        
+        while len(swapIdx)<numSwap:
+            idx = np.random.randint(0,self.nin+1) #returns int on interval [low,high)
+            if (not idx in swapIdx):
+                swapIdx.append(idx)
+        for i in swapIdx:
+            self.weights1[i] = (np.random.random()-0.5)*2/np.sqrt(self.nin)
+
+        
