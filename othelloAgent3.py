@@ -7,7 +7,7 @@ class OthelloAgent:
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),1)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),4)
 
         return moveList
     
