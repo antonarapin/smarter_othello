@@ -2,7 +2,7 @@ import mlp, numpy as np
 class OthelloAgent:
     def __init__(self, problem):
         self.problem = problem
-        self.net = mlp.mlp(weight1File="mlpLearnedWeights/endfWt60.data",weight2File="mlpLearnedWeights/endsWt60.data")
+        self.net = mlp.mlp(weight1File="fWt0.5RR.data",weight2File="sWt0.5RR.data")
 
     def getMoves(self):
         state = self.problem.getState()
