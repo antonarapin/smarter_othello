@@ -31,7 +31,7 @@ class Othello_CNN(nn.Module):
         fo4 = func.tanh(o4)
         o5 = self.c5(fo4)
         fo5 = func.tanh(o5)
-        o6 = self.c4(fo5)
+        o6 = self.c6(fo5)
         fo6 = func.tanh(o6)
         o = fo6.view(1,4)
         output = func.tanh(self.l1(o))
