@@ -1,12 +1,16 @@
 class OthelloAgent:
-    def __init__(self, problem):
+    def __init__(self, problem, d=""):
         self.problem = problem
+        if d=="":
+            self.depth = 3
+        else:
+            self.depth = int(d)
 
     def getMoves(self):
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),1)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),self.depth)
 
         return moveList
     

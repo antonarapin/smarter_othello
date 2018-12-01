@@ -1,8 +1,12 @@
 import mlp, numpy as np
 class OthelloAgent:
-    def __init__(self, problem):
+    def __init__(self, problem,fnames = ""):
         self.problem = problem
-        self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
+        if fnames=="":
+            self.net = mlp.mlp(weight1File="mlpLearnedWeights/fWt20k.data",weight2File="mlpLearnedWeights/sWt20k.data")
+        else:
+            names = fnames.split() #names should be separated by space: "fst snd"
+            self.net = mlp.mlp(weight1File=names[0],weight2File=names[1])
 
     def getMoves(self):
         state = self.problem.getState()
