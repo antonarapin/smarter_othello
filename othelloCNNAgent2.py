@@ -6,7 +6,7 @@ class OthelloAgent:
     def __init__(self, problem, _=None):
         self.problem = problem
         #self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
-        self.net = torch.load("cnn4_model0.08.pt")
+        self.net = torch.load("cnn4_model0.1.pt")
         self.net.eval()
 
     def getMoves(self):
