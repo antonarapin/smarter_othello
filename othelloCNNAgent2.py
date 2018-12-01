@@ -1,19 +1,19 @@
 import mlp, numpy as np
 import torch
-from dnn import Othello_CNN
+from cnn4 import Othello_CNN
 
 class OthelloAgent:
-    def __init__(self, problem):
+    def __init__(self, problem, _=None):
         self.problem = problem
         #self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
-        self.net = torch.load("dnn_model0.1.pt")
+        self.net = torch.load("cnn4_model0.1.pt")
         self.net.eval()
 
     def getMoves(self):
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),3)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),0)
 
         return moveList
     
@@ -35,7 +35,7 @@ class OthelloAgent:
             arr = np.array(preArr)
             result = []
             for a in range(len(arr)):
-                inputs = torch.FloatTensor(arr[a])
+                inputs = torch.FloatTensor(arr[a].reshape((1,1,8,8)))
                 result.append(float(self.net(inputs)))
             #result = self.net.mlpfwd(arr)
             for i in range(len(succList)):
