@@ -1,13 +1,18 @@
 class OthelloAgent:
-    def __init__(self, problem):
+    def __init__(self, problem, d=""):
         self.problem = problem
-        self.weights = [[4,-3,2,2],[-3,-4,-1,-1],[2,-1,1,0],[2,-1,0,1]]
+        #self.weights = [[4,-3,2,2],[-3,-4,-1,-1],[2,-1,1,0],[2,-1,0,1]]
+        self.weights = [[99,-8,8,6],[-8,-24,-4,-3],[8,-4,7,4],[6,-3,4,0]]
+        if d=="":
+            self.depth = 3
+        else:
+            self.depth = int(d)
 
     def getMoves(self):
         state = self.problem.getState()
         turn = self.problem.getTurn()
         successors = self.problem.getSuccessors(state,turn)
-        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),2)
+        moveList,mm = self.MinimaxSearch(state,turn,-float('inf'),float('inf'),self.depth)
 
         return moveList
     
@@ -73,4 +78,4 @@ class OthelloAgent:
                     ij = 3 - c%4
                 if state[r][c]!=0:
                     score[(1+state[r][c])//2] += self.weights[im][ij]
-        return (score[1]-score[0])/16 #so results are between -1 and 1
+        return (score[1]-score[0])/135 #so results are between -1 and 1

@@ -27,12 +27,14 @@ def main():
     parser.add_argument('-p2', '--player2', type=str, default='random', help='the name of a Python file containing a Othello agent, or "random" or "human" (default: random)')
     parser.add_argument('-t', '--trials', type=int, default=1, help='the number of games to play (default 1; has no effect if either player is human; if TRIALS > 1 game will not be displayed)')
     parser.add_argument('-nd', '--nodisplay', action='store_true', default=False, help='do not display the game (has no effect if a player is human)')
-    
+    parser.add_argument('-p1A', '--player1Args', type=str, default="", help=' any optional parameter that need to be passed on to agent for player 1 (default: "")')
+    parser.add_argument('-p2A', '--player2Args', type=str, default="", help=' any optional parameter that need to be passed on to agent for player 2 (default: "")')
     args = parser.parse_args()
     #gather = OthelloDataCollector()
     problem = Othello()   
 
     players = [args.player1, args.player2]
+    pArgs = [args.player1Args,args.player2Args]
         
     if args.player1 == "human" or args.player2 == "human":
         args.trials = 1
@@ -47,7 +49,7 @@ def main():
         if players[i] != "random" and players[i] != "human":
             mod = importlib.import_module(".".join(players[i].split(".")[:-1]))
             with timeout(2):
-                playerPrograms[i] = mod.OthelloAgent(problem)
+                playerPrograms[i] = mod.OthelloAgent(problem,pArgs[i])
               
     p1Wins = 0
     p2Wins = 0
@@ -104,9 +106,9 @@ def main():
         print("Player 2 Wins: " + str(p2Wins))
         print("Draws:         " + str(draws))
         
-    for i in range(2):
-        if turns[i] > 0:
-            print("Player " + str(i+1) + ": " + str(times[i]/turns[i]) + " seconds per step, on average")
+    # for i in range(2):
+    #     if turns[i] > 0:
+    #         print("Player " + str(i+1) + ": " + str(times[i]/turns[i]) + " seconds per step, on average")
 
     if args.trials == 1 and not args.nodisplay:
         print("Click on the window to exit")
