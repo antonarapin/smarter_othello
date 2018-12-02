@@ -1,12 +1,12 @@
 import mlp, numpy as np
 import torch
-from dnn import Othello_CNN
+from board_weights_net import Othello_CNN
 
 class OthelloAgent:
     def __init__(self, problem):
         self.problem = problem
-        #self.net = mlp.mlp(weight1File="fstWeights.data",weight2File="sndWeights.data")
-        self.net = torch.load("dnn_model0.1.pt")
+        #self.net = mlp.mlp(weight1File="fstWeKeyboardInterrupthts.data",weight2File="sndWeights.data")
+        self.net = torch.load("bnet_model0.05.pt")
         self.net.eval()
 
     def getMoves(self):
