@@ -5,7 +5,8 @@ class OthelloAgent:
         if fnames=="":
             self.net = mlp.mlp(weight1File="mlpLearnedWeights/fWt20k.data",weight2File="mlpLearnedWeights/sWt20k.data")
         else:
-            names = fnames.split() #names should be separated by space: "fst snd"
+            names = fnames.split('%') #names should be separated by '&: "fst&snd"
+            #print("\n\n",names)
             self.net = mlp.mlp(weight1File=names[0],weight2File=names[1])
 
     def getMoves(self):

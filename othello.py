@@ -131,13 +131,13 @@ class Othello:
             elif self.turn==-1:
                 if len(self.getLegalMoves(1))!= 0:
                     self.turn = 1
-                elif self.truState:
-                    print("Player 2 has no legal moves, therefore they forefeit their turn")
+                #elif self.truState:
+                    #print("Player 2 has no legal moves, therefore they forefeit their turn")
             else:
                 if len(self.getLegalMoves(-1))!= 0:
                     self.turn = -1
-                elif self.truState:
-                    print("Player 1 has no legal moves, therefore they forefeit their turn")
+                #elif self.truState:
+                    #print("Player 1 has no legal moves, therefore they forefeit their turn")
         else:
             print("Illegal move")
     
