@@ -1,0 +1,101 @@
+import random
+import argparse
+import time
+import importlib
+import signal
+from NoDPothello import *
+from dataCollector import OthelloDataCollector
+#from board_cnn import Othello_CNN
+
+class timeout:
+    def __init__(self, seconds=1):
+        self.seconds = seconds
+
+    def timeoutCallback(self, signum, frame):
+        raise TimeoutError("Timed out after " + str(self.seconds) + " seconds")
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.timeoutCallback)
+        signal.alarm(self.seconds)
+
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)    
+
+def main():
+    parser = argparse.ArgumentParser(description='Play Othello with computer players.')
+    parser.add_argument('-p1', '--player1', type=str, default='random', help='the name of a Python file containing an Othello agent, or "random" (default: random)')
+    parser.add_argument('-p2', '--player2', type=str, default='random', help='the name of a Python file containing a Othello agent, or "random" (default: random)')
+    parser.add_argument('-t', '--trials', type=int, default=1, help='the number of games to play (default:1)')
+    parser.add_argument('-p1A', '--player1Args', type=str, default="", help=' any optional parameter that need to be passed on to agent for player 1 (default: "")')
+    parser.add_argument('-p2A', '--player2Args', type=str, default="", help=' any optional parameter that need to be passed on to agent for player 2 (default: "")')
+    args = parser.parse_args()
+    #gather = OthelloDataCollector()
+    problem = Othello()   
+
+    players = [args.player1, args.player2]
+    pArgs = [args.player1Args,args.player2Args]     
+        
+    playerPrograms = [None, None]
+    for i in range(2):
+        if players[i] != "random":
+            mod = importlib.import_module(".".join(players[i].split(".")[:-1]))
+            with timeout(2):
+                playerPrograms[i] = mod.OthelloAgent(problem,pArgs[i])
+              
+    p1Wins = 0
+    p2Wins = 0
+    draws = 0
+    times = [0, 0]
+    turns = [0, 0]
+    for t in range(args.trials):
+        problem.reset()
+       
+        while not problem.isTerminal():
+            turn = problem.getTurn()
+            playerIdx = (1 + turn)//2
+            if players[playerIdx] == "random":
+                moves = problem.legalMovesOnly()
+            else: #minimax
+                startT = time.time()
+                try:
+                    with timeout(10):
+                        moves = playerPrograms[playerIdx].getMoves()
+                except TimeoutError:
+                    print("Player " + str(playerIdx+1) + " timed out after 10 seconds. Choosing random action.")
+                    moves = problem.legalMovesOnly()
+                endT = time.time()
+                times[playerIdx] += endT - startT
+                turns[playerIdx] += 1
+
+            move = random.choice(moves)
+            problem.move(move[0],move[1])
+            #gather.addDataPoint(problem.getState())
+        #gather.endGame(problem.finalScore())
+    
+        FS = problem.finalScore()
+        if FS==0:
+            whoWon = "Draw"
+            draws += 1
+        elif FS > 0:
+            whoWon = "Player 2 wins by "+str(FS)+"!"
+            p2Wins += 1
+        elif FS < 0:
+            whoWon = "Player 1 wins by "+str(abs(FS))+"!"
+            p1Wins += 1
+            
+        if args.trials > 1:
+            whoWon = "Game " + str(t+1) + ": " + whoWon
+        print(whoWon)
+
+    if args.trials > 1:
+        print("Stats:")
+        print("Player 1 Wins: " + str(p1Wins))
+        print("Player 2 Wins: " + str(p2Wins))
+        print("Draws:         " + str(draws))
+        
+    for i in range(2):
+        if turns[i] > 0:
+            print("Player " + str(i+1) + ": " + str(times[i]/turns[i]) + " seconds per step, on average")
+            
+if __name__ == "__main__":
+    main()
